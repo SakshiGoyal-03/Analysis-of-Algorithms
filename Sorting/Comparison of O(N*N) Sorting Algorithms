@@ -1,0 +1,267 @@
+import java.io.IOException;
+import java.io.PrintStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+
+
+class Table{
+	
+	JFrame f;
+	
+	JTable j;
+
+	
+	Table(long B1,  long B2, long B3,  long B4 ,   long B5 , long B6 , long I1 ,long I2 , long I3 , long I4 , long I5 , long I6 , long S1 ,  long S2 ,  long S3 ,  long S4,  long S5,  long S6  )
+	{
+		
+		f = new JFrame();
+
+		
+		f.setTitle("Sorting AlgoritBms");
+
+		
+		String[][] data = {
+			{"100" , String.valueOf(B1) , String.valueOf(S1) ,String.valueOf(I1) },
+			{"1000" , String.valueOf(B2) , String.valueOf(S2) ,String.valueOf(I2) },
+			{"10000" , String.valueOf(B3) , String.valueOf(S3) ,String.valueOf(I3) },
+			{"100000" , String.valueOf(B4) , String.valueOf(S4) ,String.valueOf(I4) },
+			{"200000" , String.valueOf(B5) , String.valueOf(S5) ,String.valueOf(I5) },
+			{"500000" , String.valueOf(B6) , String.valueOf(S6) ,String.valueOf(I6) },
+		};
+
+		
+		String[] columnNames = { "Input Size ", "BubbleSort", "SelectionSort" , "InsertionSort" };
+
+	
+		j = new JTable(data, columnNames);
+		j.setBounds(30, 40, 200, 300);
+
+		
+		JScrollPane sp = new JScrollPane(j);
+		f.add(sp);
+		
+		f.setSize(500, 200);
+		
+		f.setVisible(true);
+	}
+
+
+	public void CreateTable( long B1,  long B2, long B3,  long B4 ,   long B5 , long B6 ,long I1 ,long I2 , long I3 , long I4 , long I5 , long I6 , long S1 ,  long S2 ,  long S3 ,  long S4,  long S5,  long S6 ) {
+		new Table(B1,B2,B3,B4,B5,B6,I1,I2,I3,I4,I5,I6,S1,S2,S3,S4,S5,S6);
+	}
+
+
+}
+
+class ReadInput{
+	
+	public  int[] FileInput() throws IOException
+	{
+		
+		List<String> listOfStrings = new ArrayList<String>();
+		BufferedReader bf = new BufferedReader(
+			new FileReader("randInts.txt"));
+		String line = bf.readLine();
+		while (line != null) {
+			listOfStrings.add(line);
+			line = bf.readLine();
+		}
+		bf.close();
+		String[] array
+			= listOfStrings.toArray(new String[0]);
+		int[] arr =new int[array.length];
+		for(int i=0;i<array.length;i++){
+                   arr[i] = Integer.parseInt(array[i]);
+		}
+		return arr;
+	}
+}
+
+
+
+ class GenerateInput{	
+    public  void Rand(int size){	
+        try{	
+            PrintStream writer = new PrintStream( new File("randInts.txt"));
+			Random r = new Random();
+			final int LIMIT = size;
+
+			for(int i = 0; i < LIMIT; i++)
+			{	writer.println( r.nextInt(10*size) );
+			}
+			writer.close();
+		}
+		catch(IOException e)
+		{	System.out.println("An error occured while trying to write to the file");
+		}
+	}
+}
+
+
+
+class Bubble{
+    public long bubbleSort(int arr[] ){
+      int n = arr.length;
+      
+        long start = System.currentTimeMillis();
+          for(int i=0;i<n-1;i++){
+            for(int j =0;j<n-i-1;j++){
+                if(arr[j] > arr[j+1]){
+                    int temp = arr[j];
+                    arr[j] = arr[j+1];
+                    arr[j+1] = temp;
+                }
+            }
+           
+          }
+            long end = System.currentTimeMillis();
+        return (end-start);
+    }
+    
+}
+class Insertion {
+     public  long InsertionSort(int[] arr){
+        long start = System.currentTimeMillis();
+        int n = arr.length;
+        int j , temp;
+        for(int i=1;i<n;i++){
+             temp = arr[i];
+            j = i-1;
+            while( j >= 0 && arr[j] > temp){
+                arr[j+1] = arr[j];
+                j=j-1;
+            }
+            arr[j+1] = temp;
+        }
+        long end = System.currentTimeMillis();
+        return (end - start);
+        
+        
+     }
+}
+
+class Selection{
+    public  long SelectionSort(int[] arr){
+
+        int n = arr.length;
+        int minIndex;
+        long start = System.currentTimeMillis();
+        for(int i=0;i<n;i++){
+            minIndex = i;
+            for(int j=i+1;j<n;j++){
+                if(arr[j] < arr[minIndex]){
+                    minIndex = j;
+                }
+            }
+            if(minIndex!=i){
+                int temp = arr[i];
+                arr[i] = arr[minIndex];
+                arr[minIndex] = temp;
+            }
+        }
+        long end = System.currentTimeMillis();
+        return (end-start);
+        
+
+    }
+    
+}
+
+class Practical{
+    
+    public static void main(String[] args) throws IOException{
+
+
+        ReadInput ob = new ReadInput();
+        GenerateInput f = new GenerateInput();
+        Bubble BubbleObject = new Bubble();
+        
+       Insertion insertionObject = new Insertion();
+
+       
+       Selection selectionObject =new Selection();
+
+        
+        f.Rand(100);
+        int[] a = ob.FileInput();
+
+       long B1 =  BubbleObject.bubbleSort(a); 
+
+        a = ob.FileInput();
+        
+        long I1 = insertionObject.InsertionSort(a);
+        
+        a = ob.FileInput();
+
+        long S1  = selectionObject.SelectionSort(a);
+
+
+        f.Rand(1000);
+         a = ob.FileInput();
+        long B2 = BubbleObject.bubbleSort(a); 
+        
+        a = ob.FileInput();
+        
+        long I2 = insertionObject.InsertionSort(a);
+        
+        a = ob.FileInput();
+
+        long S2 = selectionObject.SelectionSort(a);
+
+        f.Rand(10000);
+         a = ob.FileInput();
+          long B3 = BubbleObject.bubbleSort(a); 
+        
+        a = ob.FileInput();
+        
+        long I3 = insertionObject.InsertionSort(a);
+        
+        a = ob.FileInput();
+
+        long S3 = selectionObject.SelectionSort(a);
+        f.Rand(100000);
+         a = ob.FileInput();
+         long B4 =  BubbleObject.bubbleSort(a); 
+        
+        a = ob.FileInput();
+        
+        long I4 = insertionObject.InsertionSort(a);
+        
+        a = ob.FileInput();
+
+        long S4 = selectionObject.SelectionSort(a);
+        f.Rand(200000);
+         a = ob.FileInput();
+        long B5 =  BubbleObject.bubbleSort(a); 
+        
+        a = ob.FileInput();
+        
+        long I5 = insertionObject.InsertionSort(a);
+        
+        a = ob.FileInput();
+
+        long S5 = selectionObject.SelectionSort(a);
+
+        f.Rand(500000);
+         a = ob.FileInput();
+         long B6 = BubbleObject.bubbleSort(a); 
+        
+         a = ob.FileInput();
+        
+        long I6 = insertionObject.InsertionSort(a);
+        
+        a = ob.FileInput();
+
+        long S6 = selectionObject.SelectionSort(a);
+
+        Table t =new Table(B1,B2, B3, B4, B5, B6,I1, I2,I3, I4, I5, I6, S1,   S2,  S3,  S4,  S5,  S6);
+       t.CreateTable(B1,B2, B3, B4, B5, B6,I1, I2,I3, I4, I5, I6, S1,   S2,  S3,  S4,  S5,  S6);
+    }
+}
