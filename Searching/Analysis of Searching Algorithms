@@ -1,0 +1,312 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+
+class Tables{
+	
+	JFrame f;
+	
+	JTable j;
+
+	
+	Tables(long L1 ,long L2 , long L3 , long L4 , long L5 , long L6 , long B1 , 
+     long B2 ,  long B3 ,  long B4,  long B5,  long B6,  long F1,  long F2, long F3,  
+     long F4 ,   long F5 , long F6 , long I1 ,long I2 , long I3 , long I4 , long I5 , long I6  )
+	{
+		
+		f = new JFrame();
+
+		
+		f.setTitle("Searching");
+
+		
+		String[][] data = {
+			{"100" , String.valueOf(L1) , String.valueOf(B1) ,String.valueOf(F1) , String.valueOf(I1)},
+			{"1000" , String.valueOf(L2) , String.valueOf(B2) ,String.valueOf(F2) ,String.valueOf(I2)},
+			{"10000" , String.valueOf(L3) , String.valueOf(B3) ,String.valueOf(F3),String.valueOf(I3) },
+			{"100000" , String.valueOf(L4) , String.valueOf(B4) ,String.valueOf(F4),String.valueOf(I4) },
+			{"200000" , String.valueOf(L5) , String.valueOf(B5) ,String.valueOf(F5),String.valueOf(I5) },
+			{"500000" , String.valueOf(L6) , String.valueOf(B6) ,String.valueOf(F6) ,String.valueOf(I6)},
+		};
+
+		
+		String[] columnNames = { "Input Size ", "Linear Search", "Binary Search" , "Fibonacci search" , "Interpolation Search" };
+
+	
+		j = new JTable(data, columnNames);
+		j.setBounds(30, 40, 200, 300);
+
+		
+		JScrollPane sp = new JScrollPane(j);
+		f.add(sp);
+		
+		f.setSize(500, 200);
+		
+		f.setVisible(true);
+	}
+
+
+	public void CreateTable(long L1 ,long L2 , long L3 , long L4 , long L5 , long L6 , long B1 , 
+     long B2 ,  long B3 ,  long B4,  long B5,  long B6,  long F1,  long F2, long F3,  
+     long F4 ,   long F5 , long F6 , long I1 ,long I2 , long I3 , long I4 , long I5 , long I6 ) {
+		new Tables(L1,L2,L3,L4,L5,L6,B1,B2,B3,B4,B5,B6,F1,F2,F3,F4,F5,F6,I1,I2,I3,I4,I5,I6);
+	}
+
+
+}
+
+
+class Practical_3{
+
+        public static int[] FileInput() throws IOException
+        {
+            
+            List<String> listOfStrings = new ArrayList<String>();
+            BufferedReader bf = new BufferedReader(
+                new FileReader("randInts.txt"));
+            String line = bf.readLine();
+            while (line != null) {
+                listOfStrings.add(line);
+                line = bf.readLine();
+            }
+            bf.close();
+            String[] array
+                = listOfStrings.toArray(new String[0]);
+            int[] arr =new int[array.length];
+            for(int i=0;i<array.length;i++){
+                       arr[i] = Integer.parseInt(array[i]);
+            }
+            return arr;
+        }
+        
+        public static void GenerateInput(int size){	
+          try{	
+            PrintStream writer = new PrintStream( new File("randInts.txt"));
+			Random r = new Random();
+			final int LIMIT = size;
+
+			for(int i = 0; i < LIMIT; i++)
+			{	writer.println( r.nextInt(10*size) );
+			}
+			writer.close();
+		   }
+		   catch(IOException e)
+		   {	System.out.println("An error occured while trying to write to the file");
+		   }
+	    }
+        public static int LinearSearch(int[] arr , int target){
+
+           
+            for(int i=0;i<arr.length;i++){
+                if(arr[i]==target){
+                    return i;
+                }
+            }
+          
+
+            return -1;
+            
+        }
+        public static long Linear(int[] arr , int target){
+             long start = System.nanoTime();
+             System.out.println(LinearSearch(arr,target));
+             long end = System.nanoTime();
+              System.out.println(end-start);
+             return (end-start);
+
+        }
+        public static int BinarySearch(int[] arr , int target){
+
+            int s= 0;
+            int e = arr.length-1;
+            while(s<=e){
+                int mid  = s+(e-s)/2;
+                if(arr[mid]==target){
+                    return mid;
+                }else if(arr[mid]>target){
+                    e = mid-1;
+                }else{
+                    s=mid+1;
+                }
+            }
+           return -1;
+           
+        }
+        public static long Binary(int[] arr , int target){
+             long start = System.nanoTime();
+             System.out.println(BinarySearch(arr,target));
+             long end = System.nanoTime();
+              System.out.println(end-start);
+             return (end-start);
+
+        }
+
+      
+      
+        public static int fibMonaccianSearch(int arr[], int x, int n) 
+        { 
+           
+            int fibMMm2 = 0;
+            int fibMMm1 = 1; 
+            int fibM = fibMMm2 + fibMMm1;
+      
+            while (fibM < n) { 
+                fibMMm2 = fibMMm1; 
+                fibMMm1 = fibM; 
+                fibM = fibMMm2 + fibMMm1; 
+            } 
+      
+           
+            int offset = -1; 
+      
+            
+            while (fibM > 1) { 
+                
+                int i = Math.min(offset + fibMMm2, n - 1); 
+                if (arr[i] < x) { 
+                    fibM = fibMMm1; 
+                    fibMMm1 = fibMMm2; 
+                    fibMMm2 = fibM - fibMMm1; 
+                    offset = i; 
+                } 
+      
+               
+                else if (arr[i] > x) { 
+                    fibM = fibMMm2; 
+                    fibMMm1 = fibMMm1 - fibMMm2; 
+                    fibMMm2 = fibM - fibMMm1; 
+                } 
+      
+                
+                else
+                    return i; 
+            } 
+      
+           
+            if (fibMMm1 == 1 && arr[n-1] == x) 
+                return n-1; 
+      
+          
+            return -1; 
+        }
+        public static long Fibonacci(int[] arr , int target){
+             long start = System.nanoTime();
+             System.out.println(BinarySearch(arr,target));
+             long end = System.nanoTime();
+              System.out.println(end-start);
+             return (end-start);
+
+        }
+        public static int interpolationSearch(int arr[], int low, int high, int target)
+       {
+        int pos = -1; 
+        int ans=-1; 
+      
+        while (low <= high && arr[low] <= target && target <= arr[high])  
+        {  
+           
+            pos = low + ((target - arr[low]) * (high - low)) / (arr[high] - arr[low]);  
+            if (arr[pos] == target){  
+                 ans = pos; 
+                 break; 
+            }  
+      
+            else if (arr[pos] < target){  
+                low = pos + 1;  
+            }  
+      
+            else{  
+                high = pos - 1;  
+            }  
+        }  
+        
+        return ans;  
+    }
+    public static long Interpolation(int[] arr , int target){
+             long start = System.nanoTime();
+             System.out.println(interpolationSearch(arr, 0, arr.length-1, target));
+             long end = System.nanoTime();
+             System.out.println(end-start);
+             return (end-start);
+
+        }
+
+    
+    public static void main(String[] args) throws IOException {
+       
+        GenerateInput(100);
+        int[] a = FileInput();
+        Random r = new Random();
+        Arrays.sort(a);
+        int target = a[r.nextInt(0,100)];
+         
+        long L1 = Linear(a, target);
+        
+        long B1 = Binary(a, target);
+        long F1 = Fibonacci(a, target);
+        long I1 = Interpolation(a, target);
+        
+
+        GenerateInput(1000);
+        a = FileInput();
+        Arrays.sort(a);
+        target = a[r.nextInt(0,1000)];
+        long L2 = Linear(a, target);
+        long B2 = Binary(a, target);
+        long F2 = Fibonacci(a, target);
+        long I2 = Interpolation(a, target);
+    
+        GenerateInput(10000);
+        a = FileInput();
+         Arrays.sort(a);
+        target = a[r.nextInt(0,10000)];
+        long L3 = Linear(a, target);
+       
+        long B3 = Binary(a, target);
+        long F3 = Fibonacci(a, target);
+        long I3 = Interpolation(a, target);
+
+        GenerateInput(100000);
+        a = FileInput();
+        Arrays.sort(a);
+
+        target = a[r.nextInt(0,100000)];
+        long L4 = Linear(a, target);
+        long B4 = Binary(a, target);
+        long F4 = Fibonacci(a, target);
+        long I4 = Interpolation(a, target);
+
+        GenerateInput(100000);
+        a = FileInput();
+         Arrays.sort(a);
+        target = a[r.nextInt(0,100000)];
+        long L5 = Linear(a, target);
+        long B5 = Binary(a, target);
+        long F5 = Fibonacci(a, target); 
+        long I5 = Interpolation(a, target);
+
+        GenerateInput(500000);
+        a = FileInput();
+        Arrays.sort(a);    
+        target = a[r.nextInt(0,500000)];
+        long L6 = Linear(a, target);
+        
+        long B6 = Binary(a, target);
+        long F6 = Fibonacci(a, target);
+        long I6 = Interpolation(a, target);
+        
+        Tables t = new Tables(L1, L2, L3, L4, L5, L6, B1, B2, B3, B4, B5, B6, F1, F2, F3, F4, F5, F6, I1, I2, I3, I4, I5,I6 );
+        t.CreateTable(L1, L2, L3, L4, L5, L6, B1, B2, B3, B4, B5, B6, F1, F2, F3, F4, F5, F6, I1, I2, I3, I4,I5,I6);
+      
+    }
+}
