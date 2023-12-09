@@ -1,0 +1,319 @@
+import java.io.IOException;
+import java.io.PrintStream;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+
+
+
+class Table{
+	
+	JFrame f;
+	
+	JTable j;
+
+	
+	Table(long Q1 ,long Q2 , long Q3 , long Q4 , long Q5 , long Q6 , long M1 ,  long M2 ,  long M3 ,  long M4,  long M5,  long M6,  long H1,  long H2, long H3,  long H4 ,   long H5 , long H6 )
+	{
+		
+		f = new JFrame();
+
+		
+		f.setTitle("Sorting Algorithms");
+
+		
+		String[][] data = {
+			{"100" , String.valueOf(H1) , String.valueOf(M1) ,String.valueOf(Q1) },
+			{"1000" , String.valueOf(H2) , String.valueOf(M2) ,String.valueOf(Q2) },
+			{"10000" , String.valueOf(H3) , String.valueOf(M3) ,String.valueOf(Q3) },
+			{"100000" , String.valueOf(H4) , String.valueOf(M4) ,String.valueOf(Q4) },
+			{"200000" , String.valueOf(H5) , String.valueOf(M5) ,String.valueOf(Q5) },
+			{"500000" , String.valueOf(H6) , String.valueOf(M6) ,String.valueOf(Q6) },
+		};
+
+		
+		String[] columnNames = { "Input Size ", "HeapSort", "MergeSort" , "QuickSort" };
+
+	
+		j = new JTable(data, columnNames);
+		j.setBounds(30, 40, 200, 300);
+
+		
+		JScrollPane sp = new JScrollPane(j);
+		f.add(sp);
+		
+		f.setSize(500, 200);
+		
+		f.setVisible(true);
+	}
+
+
+	public void CreateTable(long Q1 ,long Q2 , long Q3 , long Q4 , long Q5 , long Q6 , long M1 ,  long M2 ,  long M3 ,  long M4,  long M5,  long M6,  long H1,  long H2, long H3,  long H4 ,   long H5 , long H6  ) {
+		new Table(Q1,Q2,Q3,Q4,Q5,Q6,M1,M2,M3,M4,M5,M6,H1,H2,H3,H4,H5,H6);
+	}
+
+
+}
+
+
+class GenerateInput{	
+    public  void Rand(int size){	
+        try{	
+            PrintStream writer = new PrintStream( new File("randInts.txt"));
+			Random r = new Random();
+			final int LIMIT = size;
+
+			for(int i = 0; i < LIMIT; i++)
+			{	writer.println( r.nextInt(10*size) );
+			}
+			writer.close();
+		}
+		catch(IOException e)
+		{	System.out.println("An error occured while trying to write to the file");
+		}
+	}
+}
+
+class ReadInput{
+	
+	public  int[] FileInput() throws IOException
+	{
+		
+		List<String> listOfStrings = new ArrayList<String>();
+		BufferedReader bf = new BufferedReader(
+			new FileReader("randInts.txt"));
+		String line = bf.readLine();
+		while (line != null) {
+			listOfStrings.add(line);
+			line = bf.readLine();
+		}
+		bf.close();
+		String[] array
+			= listOfStrings.toArray(new String[0]);
+		int[] arr =new int[array.length];
+		for(int i=0;i<array.length;i++){
+                   arr[i] = Integer.parseInt(array[i]);
+		}
+		return arr;
+	}
+}
+
+
+class Practical_2{
+	public static void HeapSort(int arr[])
+	{
+		int N = arr.length;
+		for (int i = N / 2 - 1; i >= 0; i--)
+			heapify(arr, N, i);
+		for (int i = N - 1; i > 0; i--) {
+			int temp = arr[0];
+			arr[0] = arr[i];
+			arr[i] = temp;
+			heapify(arr, i, 0);
+		}
+	}
+
+	
+	public static void heapify(int arr[], int N, int i)
+	{
+		int largest = i; 
+		int l = 2 * i + 1; 
+		int r = 2 * i + 2; 
+
+		if (l < N && arr[l] > arr[largest])
+			largest = l;
+
+		
+		if (r < N && arr[r] > arr[largest])
+			largest = r;
+
+		
+		if (largest != i) {
+			int swap = arr[i];
+			arr[i] = arr[largest];
+			arr[largest] = swap;
+
+			
+			heapify(arr, N, largest);
+		}
+	}
+
+	public static long HeapSortAlgorithm(int[] arr){
+		long start = System.currentTimeMillis();
+		HeapSort(arr);
+		long end = System.currentTimeMillis();
+		return (end-start);
+		
+	}
+
+	public static int QuickSortPartition(int arr[], int low, int high)
+	{
+		int pivot = arr[high]; 
+		int i = (low-1);
+		for (int j=low; j<high; j++)
+		{
+			
+			if (arr[j] <= pivot)
+			{
+				i++;
+				int temp = arr[i];
+				arr[i] = arr[j];
+				arr[j] = temp;
+			}
+		}
+
+		
+		int temp = arr[i+1];
+		arr[i+1] = arr[high];
+		arr[high] = temp;
+
+		return i+1;
+	}
+
+	public static void QuickSort(int arr[], int low, int high)
+	{
+		
+		if (low < high)
+		{
+			
+			int pi = QuickSortPartition(arr, low, high);
+			QuickSort(arr, low, pi-1);
+			QuickSort(arr, pi+1, high);
+		}
+		
+	}
+    
+	public static long  QuickSortAlgorithm(int[] arr){
+		long start = System.currentTimeMillis();
+
+		QuickSort(arr, 0, arr.length-1);
+
+		long end = System.currentTimeMillis();
+		return (end-start);
+		
+
+	}
+
+	public static void merge(int arr[], int l, int m, int r)
+	{
+		
+		int n1 = m - l + 1;
+		int n2 = r - m;
+		int L[] = new int[n1];
+		int R[] = new int[n2];
+		for (int i = 0; i < n1; ++i)
+			L[i] = arr[l + i];
+		for (int j = 0; j < n2; ++j)
+			R[j] = arr[m + 1 + j];
+
+		int i = 0, j = 0;
+		int k = l;
+		while (i < n1 && j < n2) {
+			if (L[i] <= R[j]) {
+				arr[k] = L[i];
+				i++;
+			}
+			else {
+				arr[k] = R[j];
+				j++;
+			}
+			k++;
+		}
+		while (i < n1) {
+			arr[k] = L[i];
+			i++;
+			k++;
+		}
+		while (j < n2) {
+			arr[k] = R[j];
+			j++;
+			k++;
+		}
+	}
+
+	
+	public static void MergeSort(int arr[], int l, int r)
+	{
+		if (l < r) {
+			int m = l + (r - l) / 2;
+			MergeSort(arr, l, m);
+			MergeSort(arr, m+1, r);
+			merge(arr, l, m, r);
+		}
+	}
+
+	public static long MergeSortAlgorithm(int[] arr){
+		long start = System.currentTimeMillis();
+		MergeSort(arr, 0, arr.length-1);
+		long end = System.currentTimeMillis();
+		return (end-start);
+	}
+    public static void main(String[] args) throws IOException{
+
+        ReadInput ob = new ReadInput();
+        GenerateInput f = new GenerateInput();
+	
+		
+
+		f.Rand(100);
+		int[] a =ob.FileInput();
+		long QuickDur1 = QuickSortAlgorithm(a);
+		a = ob.FileInput();
+		long MergeDur1 = MergeSortAlgorithm(a);
+		a=ob.FileInput();
+		long HeapDur1 = HeapSortAlgorithm(a);
+
+
+		f.Rand(1000);
+		a =ob.FileInput();
+		long QuickDur2 = QuickSortAlgorithm(a);
+		a = ob.FileInput();
+		long MergeDur2 = MergeSortAlgorithm(a);
+		a=ob.FileInput();
+		long HeapDur2 = HeapSortAlgorithm(a);
+
+		f.Rand(10000);
+		a =ob.FileInput();
+		long QuickDur3 = QuickSortAlgorithm(a);
+		a = ob.FileInput();
+		long MergeDur3 = MergeSortAlgorithm(a);
+		a=ob.FileInput();
+		long HeapDur3 = HeapSortAlgorithm(a);
+
+		f.Rand(100000);
+		a =ob.FileInput();
+		long QuickDur4 = QuickSortAlgorithm(a);
+		a = ob.FileInput();
+		long MergeDur4 = MergeSortAlgorithm(a);
+		a=ob.FileInput();
+		long HeapDur4 = HeapSortAlgorithm(a);
+
+		f.Rand(200000);
+		a =ob.FileInput();
+		long QuickDur5 = QuickSortAlgorithm(a);
+		a = ob.FileInput();
+		long MergeDur5 = MergeSortAlgorithm(a);
+		a=ob.FileInput();
+		long HeapDur5 = HeapSortAlgorithm(a);
+
+		f.Rand(500000);
+		a =ob.FileInput();
+		long QuickDur6 = QuickSortAlgorithm(a);
+		a = ob.FileInput();
+		long MergeDur6 = MergeSortAlgorithm(a);
+		a=ob.FileInput();
+		long HeapDur6 = HeapSortAlgorithm(a);
+
+        Table t = new Table(QuickDur1,QuickDur2,QuickDur3,QuickDur4,QuickDur5,QuickDur6,MergeDur1,
+		MergeDur2,MergeDur3,MergeDur4,MergeDur5,MergeDur6,HeapDur1,HeapDur2,HeapDur3,HeapDur4,HeapDur5,HeapDur6);
+		t.CreateTable(QuickDur1,QuickDur2,QuickDur3,QuickDur4,QuickDur5,QuickDur6,MergeDur1,
+		MergeDur2,MergeDur3,MergeDur4,MergeDur5,MergeDur6,HeapDur1,HeapDur2,HeapDur3,HeapDur4,HeapDur5,HeapDur6);
+
+    }
+}
