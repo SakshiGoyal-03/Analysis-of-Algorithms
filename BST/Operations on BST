@@ -1,0 +1,254 @@
+import java.util.Scanner;
+
+class Node {
+    int data;
+    Node left, right;
+
+    public Node(int item) {
+        data = item;
+        left = right = null;
+    }
+}
+
+class BinarySearchTree {
+    Node root;
+
+    BinarySearchTree() {
+        root = null;
+    }
+
+    void insert(int key) {
+        root = insertRec(root, key);
+    }
+
+    Node insertRec(Node root, int key) {
+        if (root == null) {
+            root = new Node(key);
+            return root;
+        }
+
+        if (key < root.data) {
+            root.left = insertRec(root.left, key);
+        } else if (key > root.data) {
+            root.right = insertRec(root.right, key);
+        }
+
+        return root;
+    }
+
+    void delete(int key) {
+        root = deleteRec(root, key);
+    }
+
+    Node deleteRec(Node root, int key) {
+        if (root == null) {
+            return root;
+        }
+
+        if (key < root.data) {
+            root.left = deleteRec(root.left, key);
+        } else if (key > root.data) {
+            root.right = deleteRec(root.right, key);
+        } else {
+            if (root.left == null) {
+                return root.right;
+            } else if (root.right == null) {
+                return root.left;
+            }
+
+            root.data = minValue(root.right);
+
+            root.right = deleteRec(root.right, root.data);
+        }
+
+        return root;
+    }
+
+    int minValue(Node root) {
+        int minValue = root.data;
+        while (root.left != null) {
+            minValue = root.left.data;
+            root = root.left;
+        }
+        return minValue;
+    }
+
+    Node search(int key) {
+        return searchRec(root, key);
+    }
+
+    Node searchRec(Node root, int key) {
+        if (root == null || root.data == key) {
+            return root;
+        }
+
+        if (key < root.data) {
+            return searchRec(root.left, key);
+        }
+
+        return searchRec(root.right, key);
+    }
+
+    Node findSuccessor(Node root, Node target) {
+        if (target.right != null) {
+            return minValueNode(target.right);
+        }
+
+        Node successor = null;
+
+        while (root != null) {
+            if (target.data < root.data) {
+                successor = root;
+                root = root.left;
+            } else if (target.data > root.data) {
+                root = root.right;
+            } else {
+                break;
+            }
+        }
+
+        return successor;
+    }
+
+    Node findPredecessor(Node root, Node target) {
+        if (target.left != null) {
+            return maxValueNode(target.left);
+        }
+
+        Node predecessor = null;
+
+        while (root != null) {
+            if (target.data > root.data) {
+                predecessor = root;
+                root = root.right;
+            } else if (target.data < root.data) {
+                root = root.left;
+            } else {
+                break;
+            }
+        }
+
+        return predecessor;
+    }
+
+    Node maxValueNode(Node node) {
+        Node current = node;
+        while (current.right != null) {
+            current = current.right;
+        }
+        return current;
+    }
+    Node minValueNode(Node node) {
+        Node current = node;
+        while (current.left != null) {
+            current = current.left;
+        }
+        return current;
+    }
+
+    void inorder() {
+        inorderRec(root);
+    }
+
+    void inorderRec(Node root) {
+        if (root != null) {
+            inorderRec(root.left);
+            System.out.print(root.data + " ");
+            inorderRec(root.right);
+        }
+    }
+
+    public static void main(String[] args) {
+        BinarySearchTree bst = new BinarySearchTree();
+
+        Scanner scanner = new Scanner(System.in);
+        int choice, key;
+
+        do {
+            System.out.println("\nBinary Search Tree Operations:");
+            System.out.println("1. Insert");
+            System.out.println("2. Delete");
+            System.out.println("3. Search");
+            System.out.println("4. Find Successor");
+            System.out.println("5. Find Predecessor");
+            System.out.println("6. Find Minimum");
+            System.out.println("7. Find Maximum");
+            System.out.println("8. Inorder Traversal");
+            System.out.println("9. Exit");
+            System.out.print("Enter your choice: ");
+            choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter key to insert: ");
+                    key = scanner.nextInt();
+                    bst.insert(key);
+                    break;
+
+                case 2:
+                    System.out.print("Enter key to delete: ");
+                    key = scanner.nextInt();
+                    bst.delete(key);
+                    break;
+
+                case 3:
+                    System.out.print("Enter key to search: ");
+                    key = scanner.nextInt();
+                    Node searchResult = bst.search(key);
+                    if (searchResult != null) {
+                        System.out.println("Key found in the tree.");
+                    } else {
+                        System.out.println("Key not found in the tree.");
+                    }
+                    break;
+
+                case 4:
+                    System.out.print("Enter key to find successor: ");
+                    key = scanner.nextInt();
+                    Node successor = bst.findSuccessor(bst.root, bst.search(key));
+                    if (successor != null) {
+                        System.out.println("Successor: " + successor.data);
+                    } else {
+                        System.out.println("No successor found.");
+                    }
+                    break;
+
+                case 5:
+                    System.out.print("Enter key to find predecessor: ");
+                    key = scanner.nextInt();
+                    Node predecessor = bst.findPredecessor(bst.root, bst.search(key));
+                    if (predecessor != null) {
+                        System.out.println("Predecessor: " + predecessor.data);
+                    } else {
+                        System.out.println("No predecessor found.");
+                    }
+                    break;
+
+                case 6:
+                    Node minNode = bst.minValueNode(bst.root);
+                    System.out.println("Minimum value in the tree: " + minNode.data);
+                    break;
+
+                case 7:
+                    Node maxNode = bst.maxValueNode(bst.root);
+                    System.out.println("Maximum value in the tree: " + maxNode.data);
+                    break;
+
+                case 8:
+                    System.out.print("Inorder Traversal: ");
+                    bst.inorder();
+                    System.out.println();
+                    break;
+
+                case 9:
+                    System.out.println("Exiting program. Goodbye!");
+                    break;
+
+                default:
+                    System.out.println("Invalid choice. Please enter a valid option.");
+            }
+        } while (choice != 9);
+
+        scanner.close();
+    }
+}
