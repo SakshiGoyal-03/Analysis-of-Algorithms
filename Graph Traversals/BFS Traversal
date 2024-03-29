@@ -1,0 +1,70 @@
+import java.util.LinkedList;
+import java.util.Queue;
+
+class Graph {
+    private int vertices;
+    private LinkedList<Integer>[] adjacencyList;
+    private String[] color;
+    private int[] distance;
+    private int[] predecessor;
+    public Graph(int v) {
+        this.vertices = v;
+        this.adjacencyList = new LinkedList[v];
+        this.color = new String[v];
+        this.distance = new int[v];
+        this.predecessor = new int[v];
+        for (int i = 0; i < v; ++i) {
+            adjacencyList[i] = new LinkedList<>();
+            color[i] = "WHITE";  
+            distance[i] = Integer.MAX_VALUE;  
+            predecessor[i] = -1; 
+        }
+    }
+    public void addUndirectedEdge(int start, int end) {
+        adjacencyList[start].add(end);
+        adjacencyList[end].add(start);
+    }
+    public void bfs(int startVertex) {
+        color[startVertex] = "GRAY";  
+        distance[startVertex] = 0;    
+        predecessor[startVertex] = -1; 
+        Queue<Integer> queue = new LinkedList<>();
+        queue.offer(startVertex);
+        while (!queue.isEmpty()) {
+            int currentVertex = queue.poll();    
+            for (int neighbor : adjacencyList[currentVertex]) {
+                if (color[neighbor].equals("WHITE")) {
+                    color[neighbor] = "GRAY";  
+                    distance[neighbor] = distance[currentVertex] + 1;  
+                    predecessor[neighbor] = currentVertex;  
+                    queue.offer(neighbor);
+                }
+            }
+            color[currentVertex] = "BLACK";
+        }
+    }
+
+    public void printBFSAttributes() {
+        System.out.println("Vertex\tColor\tDistance\tPredecessor");
+        for (int i = 0; i < vertices; i++) {
+            System.out.println(i + "\t" + color[i] + "\t" + distance[i] + "\t\t" + predecessor[i]);
+        }
+    }
+    public static void main(String[] args) {
+        Graph graph = new Graph(8);
+        graph.addUndirectedEdge(0, 1);
+        graph.addUndirectedEdge(0, 4);
+        graph.addUndirectedEdge(1, 5);
+        graph.addUndirectedEdge(2, 3);
+        graph.addUndirectedEdge(2, 5);
+        graph.addUndirectedEdge(2, 6);
+        graph.addUndirectedEdge(3, 6);
+        graph.addUndirectedEdge(3, 7);
+        graph.addUndirectedEdge(5, 6);
+        graph.addUndirectedEdge(6, 7);
+        System.out.println("Breadth-First Search starting from vertex 1:");
+        graph.bfs(1);
+        System.out.println("\nBFS Attributes:");
+        graph.printBFSAttributes();
+    }
+}
