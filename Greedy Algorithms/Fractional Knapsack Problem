@@ -1,0 +1,45 @@
+import java.util.Arrays;
+import java.util.Comparator;
+
+public class FractionalKnapSack {
+
+    static class Item {
+        int weight;
+        int value;
+        double ratio;
+
+        Item(int weight, int value) {
+            this.weight = weight;
+            this.value = value;
+            this.ratio = (double) value / weight;
+        }
+    }
+
+    static double fractionalKnapsack(int capacity, Item[] items) {
+        Arrays.sort(items, Comparator.comparingDouble(o -> -o.ratio));
+
+        double totalValue = 0;
+        int remainingCapacity = capacity;
+
+        for (Item item : items) {
+            if (remainingCapacity >= item.weight) {
+                totalValue += item.value;
+                remainingCapacity -= item.weight;
+            } else { 
+                totalValue += (double) remainingCapacity / item.weight * item.value;
+                break;
+            }
+        }
+
+        return totalValue;
+    }
+
+    public static void main(String[] args) {
+        int capacity = 20;
+        Item[] items = {new Item(10, 60), new Item(20, 100), new Item(30, 120)};
+
+        double maxValue = fractionalKnapsack(capacity, items);
+        System.out.println("CAPACITY : 20");
+        System.out.println("Maximum value that can be obtained: " + maxValue);
+    }
+}
