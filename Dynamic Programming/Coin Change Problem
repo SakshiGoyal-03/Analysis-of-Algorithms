@@ -1,0 +1,44 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class CoinChange {
+    
+    public static List<Integer> coinChange(int[] coins, int amount) {
+        int[] dp = new int[amount + 1];
+        Arrays.fill(dp, Integer.MAX_VALUE);
+        dp[0] = 0;
+        
+        List<List<Integer>> coinUsed = new ArrayList<>();
+        for (int i = 0; i <= amount; i++) {
+            coinUsed.add(new ArrayList<>());
+        }
+        
+        for (int amt = 1; amt <= amount; amt++) {
+            for (int coin : coins) {
+                if (amt >= coin && dp[amt - coin] + 1 < dp[amt]) {
+                    dp[amt] = dp[amt - coin] + 1;
+                    coinUsed.set(amt, new ArrayList<>(coinUsed.get(amt - coin)));
+                    coinUsed.get(amt).add(coin);
+                }
+            }
+        }
+        
+        if (dp[amount] == Integer.MAX_VALUE) {
+            System.out.println("It is not possible to make up the amount with the given coins.");
+            return null;
+        }
+        
+        System.out.println("Minimum number of coins required: " + dp[amount]);
+        System.out.println("Denominations used: " + coinUsed.get(amount));
+        
+        return coinUsed.get(amount);
+    }
+
+    public static void main(String[] args) {
+        int[] coins = {1, 2, 5, 10, 20, 50, 100, 200};  
+        int amount = 67 ; 
+        System.out.println("Enter the amount :  67");
+        coinChange(coins, amount);
+    }
+}
