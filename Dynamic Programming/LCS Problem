@@ -1,0 +1,86 @@
+import java.util.Random;
+
+public class LongestCommonSubsequence {
+
+    public static String generateRandomString(int length) {
+        StringBuilder sb = new StringBuilder();
+        Random random = new Random();
+        String chars = "AGTC";
+        for (int i = 0; i < length; i++) {
+            sb.append(chars.charAt(random.nextInt(chars.length())));
+        }
+        return sb.toString();
+    }
+
+    public static int longestCommonSubsequenceSize(String str1, String str2) {
+        int m = str1.length();
+        int n = str2.length();
+
+        int[][] dp = new int[m + 1][n + 1];
+
+        for (int i = 0; i <= m; i++) {
+            for (int j = 0; j <= n; j++) {
+                if (i == 0 || j == 0)
+                    dp[i][j] = 0;
+                else if (str1.charAt(i - 1) == str2.charAt(j - 1))
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                else
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+            }
+        }
+
+        return dp[m][n];
+    }
+
+    public static String longestCommonSubsequence(String str1, String str2) {
+        int m = str1.length();
+        int n = str2.length();
+
+        int[][] dp = new int[m + 1][n + 1];
+
+        for (int i = 0; i <= m; i++) {
+            for (int j = 0; j <= n; j++) {
+                if (i == 0 || j == 0)
+                    dp[i][j] = 0;
+                else if (str1.charAt(i - 1) == str2.charAt(j - 1))
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                else
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+            }
+        }
+
+       
+        StringBuilder lcs = new StringBuilder();
+        int i = m, j = n;
+        while (i > 0 && j > 0) {
+            if (str1.charAt(i - 1) == str2.charAt(j - 1)) {
+                lcs.insert(0, str1.charAt(i - 1));
+                i--;
+                j--;
+            } else if (dp[i - 1][j] > dp[i][j - 1]) {
+                i--;
+            } else {
+                j--;
+            }
+        }
+
+        return lcs.toString();
+    }
+
+    public static void main(String[] args) {
+       
+        int length1 = 10; 
+        int length2 = 12; 
+        String str1 = generateRandomString(length1);
+        String str2 = generateRandomString(length2);
+
+        
+        System.out.println("String 1: " + str1);
+        System.out.println("String 2: " + str2);
+
+        String lcs = longestCommonSubsequence(str1, str2);
+        int lcsSize = longestCommonSubsequenceSize(str1, str2);
+        System.out.println("Longest Common Subsequence: " + lcs);
+        System.out.println("Size of Longest Common Subsequence: " + lcsSize);
+    }
+}
